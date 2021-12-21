@@ -1,0 +1,60 @@
+version: "3"
+services:
+  backend:
+    build: ./backend
+    command: bash -c "python3 manage.py migrate && python3 manage.py collectstatic --no-input --clear && python3 manage.py runserver  0.0.0.0:8000"
+    ports:
+      - 8000:8000
+      # デバッグ用にポートを追加
+      - 8888:8888
+    volumes:
+      - ./backend:/code
+      - static:/code/static_root
+      - media:/code/media
+    links:
+      - db
+    entrypoint:
+      - dockerize
+      - -timeout
+      - 60s
+      - -wait
+      - tcp://db:3308
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - AXIOS_BASEURL=http://backend:8000/api
+        - AXIOS_BROWSER_BASEURL=/api
+    ports:
+      - 3000:3000
+      - 9229:9229
+    command: "npm run debug"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3000
+      - AXIOS_BASEURL=http://backend:8000/api
+      - AXIOS_BROWSER_BASEURL=/api
+    volumes:
+      - ./frontend:/code
+      
+  nginx:
+    image: nginx:1.13
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+      - static:/code/static_root
+      - media:/code/media
+    depends_on:
+      - backend
+      - frontend
+
+volumes:
+  mysqldata:
+  static:
+  media:
+
+

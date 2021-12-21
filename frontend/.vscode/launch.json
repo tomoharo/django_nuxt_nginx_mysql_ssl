@@ -1,0 +1,39 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "chrome",
+        "request": "launch",
+        "name": "client",
+        "url": "https://localhost:80",
+        "webRoot": "${workspaceFolder}",
+        "runtimeArgs": [
+            "--remote-debugging-port=9222"
+        ],
+        "sourceMapPathOverrides": {
+            "webpack:///./*": "${webRoot}/*",
+            "webpack:///*": "${webRoot}/*"
+        }
+      },
+      {
+        "type": "node",
+        "request": "attach",
+        "name": "ssr",
+        "port": 9229,
+        "address": "localhost",
+        "localRoot": "${workspaceFolder}",
+        "remoteRoot": "/code",
+        "protocol": "inspector",
+        "resolveSourceMapLocations": [
+            "${workspaceFolder}/**",
+            "!**/node_modules/**"
+          ]
+      },
+    ],
+    "compounds": [
+      {
+        "name": "debug-frontend",
+        "configurations": ["client", "ssr"]
+      }
+    ]
+  }

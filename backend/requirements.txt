@@ -1,0 +1,9 @@
+django
+django-filter
+djangorestframework
+django-cors-headers
+drf-nested-routers
+psycopg2-binary
+mysqlclient
+gunicorn
+django-environ
