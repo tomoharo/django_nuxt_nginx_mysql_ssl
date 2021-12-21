@@ -35,7 +35,7 @@ services:
       DOMAINS: "${DOMAIN}"
       STAGE: "production"
     volumes:
-      - ./nginx/production.conf.erb:/var/lib/nginx-conf/production.conf.erb:ro
+      - ./nginx/${DOMAIN}.ssl.conf.erb:/var/lib/nginx-conf/${DOMAIN}.ssl.conf.erb:ro
       - static:/code/static_root
       - media:/code/media
     depends_on:
